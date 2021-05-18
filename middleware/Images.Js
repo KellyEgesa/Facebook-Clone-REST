@@ -6,7 +6,7 @@ const storage = multer.diskStorage({
     cb(null, "./postImage/");
   },
   filename: (req, file, cb) => {
-    cb(null, mongoose.Types.ObjectId().toHexString());
+    cb(null, mongoose.Types.ObjectId().toHexString() + ".png");
   },
 });
 
