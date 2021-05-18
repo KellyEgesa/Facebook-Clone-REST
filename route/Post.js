@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/Auth");
 const { upload } = require("../middleware/Images.Js");
 const { validatePost, Post } = require("../models/Post");
 
-router.post("/create", upload.single("postImage"), async (req, res) => {
+router.post("/create", auth, upload.single("postImage"), async (req, res) => {
   const { error } = validatePost(req.body);
   if (error)
     return res
@@ -26,7 +27,8 @@ router.post("/create", upload.single("postImage"), async (req, res) => {
     });
   }
 
-  res.send(req.file);
+  await newPost.save();
+  res.send(newPost);
 });
 
 module.exports = router;

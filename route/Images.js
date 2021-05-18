@@ -5,7 +5,7 @@ const fs = require("fs");
 router.get("/:id", (req, res) => {
   var filePath = __dirname.split("/");
   filePath.pop();
-  filePath = filePath.join("/") + "/postImage/" + req.params.id;
+  filePath = filePath.join("/") + "/postImage/" + req.params.id + ".png";
 
   fs.exists(filePath, (exists) => {
     if (!exists) {
