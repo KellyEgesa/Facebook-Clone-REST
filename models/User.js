@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const { jwtPrivateKey } = require("../secrets");
 
 const userSchema = new mongoose.Schema({
   email: {

@@ -34,3 +34,32 @@ router.post("/create", async (req, res) => {
 
   return res.send(saved);
 });
+
+router.post("/login", async (req, res) => {
+  const { error } = loginUser(req.body);
+  if (error)
+    return res
+      .status(400)
+      .send({ message: error.details[0].message, status: "failed" });
+
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user)
+    return res.status(404).send({
+      message: "User doesnt exist, Kindly register first",
+      status: "Not found",
+    });
+
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword)
+    return res.status(400).send({
+      message: "Wrong password",
+    });
+
+  const token = user.generateAuthToken();
+
+  return res
+    .header("x-auth-token", token)
+    .header("access-control-expose-headers", "x-auth-token")
+    .send({ user: user });
+});
