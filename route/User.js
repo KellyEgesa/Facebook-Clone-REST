@@ -9,6 +9,11 @@ const {
   Html: CreateHtml,
   Subject: CreateSubject,
 } = require("../Common/Emails/Create");
+const {
+  Text: ResetText,
+  Html: ResetHtml,
+  Subject: ResetSubject,
+} = require("../Common/Emails/reset");
 
 const { Post } = require("../models/Post");
 
@@ -106,6 +111,13 @@ router.post("/resetPassword", async (req, res) => {
       resetPasswordExpires: Date.now() + 3600000,
     }
   );
+
+  const resetUrl = `https://localhost:3000/api/reset/${token}`;
+
+  //sendEmail
+  sendEmail(user.email, ResetSubject, ResetText(resetUrl), ResetHtml(resetUrl));
+
+  res.send({ message: "Email sent with reset Url", status: "Successful" });
 });
 
 router.put("/reset/:id", async (req, res) => {
