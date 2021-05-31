@@ -1,6 +1,7 @@
 const { User, loginUser, validateUser } = require("../models/User");
 const express = require("express");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const { sendEmail } = require("../Common/Email");
 const {
@@ -8,20 +9,10 @@ const {
   Html: CreateHtml,
   Subject: CreateSubject,
 } = require("../Common/Emails/Create");
+
 const { Post } = require("../models/Post");
 
 const router = express.Router();
-
-async function braa() {
-  let boom = await sendEmail(
-    "bartholomew.egesa@gmail.com",
-    CreateSubject,
-    CreateText,
-    CreateHtml
-  );
-  console.log(boom);
-}
-braa();
 
 router.post("/create", async (req, res) => {
   const { error } = validateUser(req.body);
@@ -98,6 +89,56 @@ router.post("/resetPassword", async (req, res) => {
     return res
       .status(400)
       .send({ message: "Email is required", status: "failed" });
+  }
+
+  let user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res
+      .status(404)
+      .send({ message: "Email doesnt exist", status: "Not Found" });
+  }
+
+  const token = crypto.randomBytes(20).toString("hex");
+  await User.updateOne(
+    { email: req.body.email },
+    {
+      resetPasswordToken: token,
+      resetPasswordExpires: Date.now() + 3600000,
+    }
+  );
+});
+
+router.put("/reset/:id", async (req, res) => {
+  let user = await User.findOne({
+    resetPasswordToken: req.params.id,
+    resetPasswordExpires: { $gt: Date.now() },
+  }).select("-password");
+
+  if (!user) {
+    return res.status(400).send("Password link is invalid or has expired");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  newPassword = await bcrypt.hash(req.body.password, salt);
+
+  try {
+    await User.findByIdAndUpdate(
+      {
+        email: user.email,
+      },
+      {
+        password: newPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      }
+    );
+    const token = user.generateAuthToken();
+    res
+      .header("x-auth-token", token)
+      .header("access-control-expose-headers", "x-auth-token")
+      .send(user);
+  } catch (ex) {
+    res.send(500).send("something went wrong");
   }
 });
 
