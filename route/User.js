@@ -44,7 +44,7 @@ router.post("/create", async (req, res) => {
   const savedUser = await newUser.save();
 
   //send email
-  sendEmail(savedUser.email, CreateSubject, CreateText, CreateHtml);
+  sendEmail(savedUser.email, CreateSubject, CreateText, CreateHtml());
 
   const token = newUser.generateAuthToken();
   return res
@@ -112,7 +112,7 @@ router.post("/resetPassword", async (req, res) => {
     }
   );
 
-  const resetUrl = `https://localhost:3000/api/reset/${token}`;
+  const resetUrl = `http://localhost:3000/api/user/reset/${token}`;
 
   //sendEmail
   sendEmail(user.email, ResetSubject, ResetText(resetUrl), ResetHtml(resetUrl));
@@ -120,11 +120,11 @@ router.post("/resetPassword", async (req, res) => {
   res.send({ message: "Email sent with reset Url", status: "Successful" });
 });
 
-router.put("/reset/:id", async (req, res) => {
+router.get("/reset/:id", async (req, res) => {
   let user = await User.findOne({
     resetPasswordToken: req.params.id,
     resetPasswordExpires: { $gt: Date.now() },
-  }).select("-password");
+  }).select("-password -resetPasswordExpires -resetPasswordToken");
 
   if (!user) {
     return res.status(400).send("Password link is invalid or has expired");
@@ -134,7 +134,7 @@ router.put("/reset/:id", async (req, res) => {
   newPassword = await bcrypt.hash(req.body.password, salt);
 
   try {
-    await User.findByIdAndUpdate(
+    await User.findOneAndUpdate(
       {
         email: user.email,
       },
@@ -144,13 +144,14 @@ router.put("/reset/:id", async (req, res) => {
         resetPasswordExpires: null,
       }
     );
+    console.log(user.email);
     const token = user.generateAuthToken();
     res
       .header("x-auth-token", token)
       .header("access-control-expose-headers", "x-auth-token")
       .send(user);
   } catch (ex) {
-    res.send(500).send("something went wrong");
+    res.status(500).send("something went wrong");
   }
 });
 

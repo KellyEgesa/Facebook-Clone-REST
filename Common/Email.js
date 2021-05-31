@@ -17,7 +17,7 @@ let sendEmail = async (receiver, subject, text, html) => {
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: "ratiba.app@gmail.com",
+        user: "talentql.facebookclone@gmail.com",
         clientId: Client_ID,
         clientSecret: Client_Secret,
         refreshToken: Refresh_Token,
@@ -26,7 +26,7 @@ let sendEmail = async (receiver, subject, text, html) => {
     });
 
     const mailDetalils = {
-      from: `System Admin 📧 <ratiba.app@gmail.com>`,
+      from: `System Admin 📧 <talentql.facebookclone@gmail.com>`,
       to: receiver,
       subject: subject,
       text: text,
@@ -36,7 +36,8 @@ let sendEmail = async (receiver, subject, text, html) => {
     let result = await transport.sendMail(mailDetalils);
     return result;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
-module.exports.email = sendEmail;
+module.exports.sendEmail = sendEmail;
