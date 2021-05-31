@@ -31,4 +31,42 @@ router.post("/create", auth, upload.single("postImage"), async (req, res) => {
   res.send(newPost);
 });
 
+router.get("/:id", auth, async (req, res) => {
+  let post = await Post.findById(req.params.id);
+  if (!post) {
+    return res.status(404).send({
+      message: "Post doesnt exist",
+      status: "Not found",
+    });
+  }
+  return res.send(post);
+});
+
+router.delete("/:id", auth, async (req, res) => {
+  let post = await Post.findByIdAndDelete(req.params.id);
+  if (!post) {
+    return res.status(404).send({
+      message: "Post doesnt exist",
+      status: "Not found",
+    });
+  }
+  return res.send(post);
+});
+
+router.put("/like/:id", auth, async (req, res) => {
+  let post = await Post.findByIdAndUpdate(
+    { _id: req.params.id },
+    {
+      $inc: { likes: +1 },
+    }
+  );
+  if (!post) {
+    return res.status(404).send({
+      message: "Post doesnt exist",
+      status: "Not found",
+    });
+  }
+  return res.send(post);
+});
+
 module.exports = router;

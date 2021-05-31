@@ -1,11 +1,27 @@
 const { User, loginUser, validateUser } = require("../models/User");
-const mongoose = require("mongoose");
-
 const express = require("express");
 const bcrypt = require("bcrypt");
+
+const { sendEmail } = require("../Common/Email");
+const {
+  Text: CreateText,
+  Html: CreateHtml,
+  Subject: CreateSubject,
+} = require("../Common/Emails/Create");
 const { Post } = require("../models/Post");
 
 const router = express.Router();
+
+async function braa() {
+  let boom = await sendEmail(
+    "bartholomew.egesa@gmail.com",
+    CreateSubject,
+    CreateText,
+    CreateHtml
+  );
+  console.log(boom);
+}
+braa();
 
 router.post("/create", async (req, res) => {
   const { error } = validateUser(req.body);
@@ -32,13 +48,13 @@ router.post("/create", async (req, res) => {
   const savedUser = await newUser.save();
 
   //send email
+  sendEmail(savedUser.email, CreateSubject, CreateText, CreateHtml);
 
-  newUser.password = null;
   const token = newUser.generateAuthToken();
   return res
     .header("x-auth-token", token)
     .header("access-control-expose-headers", "x-auth-token")
-    .send(savedUser);
+    .send({ _id: newUser._id, email: newUser.email });
 });
 
 router.post("/login", async (req, res) => {
@@ -75,6 +91,14 @@ router.post("/login", async (req, res) => {
     .header("x-auth-token", token)
     .header("access-control-expose-headers", "x-auth-token")
     .send({ user: returnUser, posts: posts });
+});
+
+router.post("/resetPassword", async (req, res) => {
+  if (!req.body.email) {
+    return res
+      .status(400)
+      .send({ message: "Email is required", status: "failed" });
+  }
 });
 
 module.exports = router;
