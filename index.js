@@ -1,8 +1,9 @@
 const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-
 const app = express();
-const port = 3000;
 
+require("./app/db")();
+require("./app/prod")(app);
+require("./app/routes")(app);
+
+const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening to port ${port}`));
