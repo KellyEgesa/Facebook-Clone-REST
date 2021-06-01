@@ -62,4 +62,29 @@ Open up postman
 
 The api documentation is available on https://www.getpostman.com/collections/3320f5a2f9baa4d395ba via postman
 
-It is also available [HERE](https://github.com/KellyEgesa/Facebook-Clone-REST/blob/branch/other_file.md)
+It is also available [HERE](https://github.com/KellyEgesa/Facebook-Clone-REST/blob/master/TalentQl%20Facebook%20Clone.postman_collection.json)
+
+## Technologies Used
+
+### DEVELOPMENT
+
+- JAVASCRIPT
+- EXPRESS
+
+### DATSBASE
+
+- MONGODB
+- Mongoose
+
+### TESTING
+
+- JEST
+
+## Support and contact details
+
+You can contact me via Email at kelly.egesa@gmail.com or via +254726359282.
+
+### License
+
+_M.I.T_
+Copyright (c)2021 **KELLY EGESA**
