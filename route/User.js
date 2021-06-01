@@ -48,6 +48,7 @@ router.post("/create", async (req, res) => {
 
   const token = newUser.generateAuthToken();
   return res
+    .status(201)
     .header("x-auth-token", token)
     .header("access-control-expose-headers", "x-auth-token")
     .send({ _id: newUser._id, email: newUser.email });
@@ -120,7 +121,7 @@ router.post("/resetPassword", async (req, res) => {
   res.send({ message: "Email sent with reset Url", status: "Successful" });
 });
 
-router.get("/reset/:id", async (req, res) => {
+router.post("/reset/:id", async (req, res) => {
   let user = await User.findOne({
     resetPasswordToken: req.params.id,
     resetPasswordExpires: { $gt: Date.now() },
@@ -128,6 +129,12 @@ router.get("/reset/:id", async (req, res) => {
 
   if (!user) {
     return res.status(400).send("Password link is invalid or has expired");
+  }
+
+  if (!req.body.password) {
+    return res
+      .status(400)
+      .send({ message: "Password is required", status: "failed" });
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -144,7 +151,6 @@ router.get("/reset/:id", async (req, res) => {
         resetPasswordExpires: null,
       }
     );
-    console.log(user.email);
     const token = user.generateAuthToken();
     res
       .header("x-auth-token", token)
