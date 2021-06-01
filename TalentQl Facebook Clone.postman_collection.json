@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "86bd085b-a318-44bb-927f-6cbdb1982140",
+		"name": "TalentQl Facebook Clone",
+		"description": "# Introduction\nThis project is designed to be simple and reasonable in size to enable me to demonstrate my skills. It is designed to test my knowledge of RESTful API design, database design, documentation, design patterns and problem-solving skills.\n\n# Overview\nChange the email variable to an email that you can easily access, The email used is just for demonstaration purposes.\nThe API is simple to use. One key to note is attatching images when creating a new post\n\n# Authentication\nTo create, view or edit posts one needs to be authenticated. Login using the Login a user or Create a new user to get access to the posts\n\n# Error Codes\n200 OK\n201 Created\n400\tBad Request\n401\tUnauthorized\n403\tForbidden\n404\tNot Found\n500\tServer Error\n\n\n# Rate limit\nThere is no rate limit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create new User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{Email}}\",\n    \"password\": \"talent@1213\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"create"
+					]
+				},
+				"description": "Create a new non-existant user. If a user already exists the request will return a 400 status code. It will automatically set the auth headers if successful"
+			},
+			"response": []
+		},
+		{
+			"name": "Login an existing user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{Email}}\",\n    \"password\": \"talent@1213\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"login"
+					]
+				},
+				"description": "Login an already existing user. It will set the authorization headers. If user doesnt exist it will return a 404 error\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/resetPassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"resetPassword"
+					]
+				},
+				"description": "Make a request for a password change and if successful an email will be sent to your email because of security"
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Password with Id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"password\": \"newPassword@1234\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/user/reset/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"reset",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "Will make the change from the request that will be sen to your email. Authorization headers will be set if succssful. ONe needs to activate within an hour or else the refreshToken is invalidated"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "postImage",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "description",
+							"value": "Testing",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/post/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"post",
+						"create"
+					]
+				},
+				"description": "Auth headers are necessary for a post to be created. "
+			},
+			"response": []
+		},
+		{
+			"name": "Get a post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/post/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"post",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "Posts will be retrieved based on the id. Auth headers are required\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a post",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/post/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"post",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "A post will be deleted. Auth is required"
+			},
+			"response": []
+		},
+		{
+			"name": "Make a like ",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/post/like/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"post",
+						"like",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "A like is made to a particular post"
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve an Image",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/images/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"images",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				},
+				"description": "Retrieve an image from a post\n"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Email",
+			"value": "talentql.facebookclone@gmail.com"
+		}
+	]
+}
